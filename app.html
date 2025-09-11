@@ -1781,12 +1781,26 @@
     </footer>
   </div>
 
-  <script>
+<script>
     // Global state
     let currentPage = 'home';
     let waitlistEmails = [];
     let contactMessages = [];
     
+    // UTILITY: Function to show temporary messages
+    function showMessage(text, color) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'success-message';
+        messageDiv.textContent = text;
+        messageDiv.style.background = color || '#2ECC71';
+        document.body.appendChild(messageDiv);
+        
+        // Remove the message after a few seconds
+        setTimeout(() => {
+            messageDiv.remove();
+        }, 3500);
+    }
+
     // Navigation functions
     function showPage(pageId) {
       // Hide all pages
@@ -1800,8 +1814,11 @@
       });
       
       // Show selected page
-      document.getElementById(pageId).classList.add('active');
-      currentPage = pageId;
+      const newPage = document.getElementById(pageId);
+      if (newPage) {
+          newPage.classList.add('active');
+          currentPage = pageId;
+      }
       
       // Update nav active state
       const navLink = document.getElementById(`nav-${pageId}`);
@@ -1839,30 +1856,109 @@
       const email = event.target.email.value;
       
       if (waitlistEmails.includes(email)) {
-        showMessage('You are already on our waitlist! We will notify you when Ayuva launches.', '#FFA500');
+        showMessage('You are already on our waitlist!', '#FFA500');
         return;
       }
       
       waitlistEmails.push(email);
       console.log('Waitlist emails:', waitlistEmails);
       
-      showMessage('Successfully joined the waitlist! We will notify you when Ayuva launches with early access.', '#2ECC71');
+      showMessage('Successfully joined the waitlist!', '#2ECC71');
       event.target.reset();
     }
 
-    // Contact form functionality
+    // Contact form functionality (CORRECTED)
     function sendContactMessage(event) {
-      event.preventDefault();
-      const formData = new FormData(event.target);
-      const message = {
-        name: formData.get('name'),
-        email: formData.get('email'),
-        organization: formData.get('organization'),
-        subject: formData.get('subject'),
-        message: form
-      }
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const messageData = {
+            name: formData.get('name'),
+            email: formData.get('email'),
+            organization: formData.get('organization'),
+            subject: formData.get('subject'),
+            message: formData.get('message') // Corrected this line
+        };
+        
+        contactMessages.push(messageData);
+        console.log('Contact Messages:', contactMessages);
+        
+        showMessage('✅ Message sent successfully!', '#2ECC71');
+        event.target.reset();
     }
-    </script>
+    
+    // --- MISSING FUNCTIONS ADDED BELOW ---
+
+    // For Nutrient Tracking Demo page
+    function switchNutrientTab(event, tabId) {
+        const parent = event.target.closest('.demo-interface');
+        parent.querySelectorAll('.demo-tab').forEach(tab => tab.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        parent.querySelectorAll('.demo-panel').forEach(panel => panel.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+    }
+
+    // For Demo page
+    function switchDemoTab(event, tabId) {
+        const parent = event.target.closest('.demo-interface');
+        parent.querySelectorAll('.demo-tab').forEach(tab => tab.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        parent.querySelectorAll('.demo-panel').forEach(panel => panel.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+    }
+
+    function updatePatientDemo() {
+        const resultDiv = document.getElementById('patient-update-result');
+        resultDiv.style.display = 'block';
+        setTimeout(() => { resultDiv.style.display = 'none'; }, 3000);
+        console.log("Patient profile updated.");
+    }
+
+    function generateDietFromProfile() {
+        alert("Generating diet plan based on the current profile...");
+        // Switch to the diet generation tab
+        const dietTabButton = document.querySelector('button[onclick*="diet-generation-demo"]');
+        if (dietTabButton) dietTabButton.click();
+    }
+
+    function switchMealTab(event, tabId) {
+        const parent = event.target.closest('.demo-panel');
+        parent.querySelectorAll('.demo-tab').forEach(tab => tab.classList.remove('active'));
+        event.target.classList.add('active');
+
+        parent.querySelectorAll('.demo-panel').forEach(panel => panel.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+    }
+
+    function exportDietChart() {
+        alert("Exporting diet chart as PDF...");
+    }
+
+    function customizeDiet() {
+        alert("Opening diet customization options...");
+    }
+
+    function scheduleFollowUp() {
+        alert("Scheduling a follow-up appointment...");
+    }
+
+    function searchFoodDemo(query) {
+        console.log("Searching for:", query);
+        // This would contain logic to filter and display food items
+    }
+
+    function showFoodDetails(foodId) {
+        alert(`Showing details for ${foodId}...`);
+        // This would populate the food-details div
+    }
+    
+    // For Contact page
+    function sendEmail() {
+        window.location.href = "mailto:wellness.wizards06@gmail.com";
+    }
+
+  </script>
 
     </body>
     
