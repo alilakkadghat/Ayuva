@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="Ayuva logo.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ayuva - Ayurvedic Diet Management Platform</title>
+  <style>
+    /* Reset */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #0A0A0A;
+      color: #F2F2F2;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Navbar */
+    nav {
+      position: sticky;
+      top: 0;
+      background: #1A1A1A;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+      z-index: 1000;
+      animation: slideDown 1s ease forwards;
+    }
+    nav h1 { 
+      color: #2ECC71; 
+      font-weight: bold; 
+      font-size: 1.5rem;
+      opacity: 0;
+      animation: fadeIn 1.2s ease forwards 0.5s;
+      cursor: pointer;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .logo {
+      height: 45px;
+      width: 45px;
+      background: #2ECC71;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #0A0A0A;
+      transform: scale(0);
+      animation: popIn 1s ease forwards 0.3s;
+    }
+
+    nav .links a {
+      margin: 0 1rem;
+      text-decoration: none;
+      color: #AAAAAA;
+      transition: color 0.3s;
+      opacity: 0;
+      animation: fadeInUp 1s ease forwards 0.8s;
+      cursor: pointer;
+    }
+    nav .links a:hover { color: #39FF14; }
+    nav .links a.active { color: #2ECC71; font-weight: bold; }
+
+    nav form {
+        display: flex;
+        gap: 10px;
+        transform: translateY(-20px);
+        opacity: 0;
+        animation: fadeInUp 1s ease forwards 1s;
+    }
+    nav input[type="email"] {
+        padding: 0.6rem;
+        border: 1px solid #333;
+        background: #0A0A0A;
+        color: #F2F2F2;
+        border-radius: 8px;
+        outline: none;
+    }
+    nav button, .hero button, .contact button, .page button {
+      background: #2ECC71;
+      color: #0A0A0A;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s, transform 0.3s;
+      font-weight: bold;
+    }
+    nav button:hover, .hero button:hover, .contact button:hover, .page button:hover { 
+      background: #39FF14; 
+      color: #0A0A0A; 
+      transform: translateY(-2px);
+    }
+
+    /* Page Container */
+    .page {
+      display: none;
+      min-height: 100vh;
+    }
+    .page.active {
+      display: block;
+    }
+
+    /* Sections */
+    section {
+      padding: 4rem 2rem;
+    }
+
+    /* Hero Section */
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      min-height: 90vh;
+      overflow: hidden;
+    }
+    .hero-content {
+      flex: 1;
+      max-width: 50%;
+    }
+    .hero h2 {
+      font-size: 2.5rem;
+      font-weight: bold;
+      opacity: 0;
+      transform: translateX(-50px);
+      animation: fadeInLeft 1.2s ease forwards 0.5s;
+    }
+    .hero h2 span { color: #2ECC71; }
+    .hero p { 
+      margin: 1rem 0; 
+      color: #AAAAAA;
+      opacity: 0;
+      transform: translateX(-50px);
+      animation: fadeInLeft 1.2s ease forwards 0.8s;
+      font-size: 1.1rem;
+    }
+    .hero button {
+      margin-right: 1rem;
+      background: #2ECC71;
+      color: #0A0A0A;
+      border: none;
+      padding: 0.7rem 1.4rem;
+      border-radius: 12px;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 1s ease forwards 1s;
+      transition: all 0.3s;
+      font-size: 1rem;
+    }
+    .hero button.outline {
+      background: transparent;
+      color: #2ECC71;
+      border: 2px solid #2ECC71;
+    }
+    .hero button.outline:hover {
+      background: #27AE60;
+      color: #F2F2F2;
+    }
+
+    .hero-visual {
+      flex: 1;
+      height: 500px;
+      background: linear-gradient(135deg, #2ECC71, #27AE60);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      margin-left: 2rem;
+    }
+
+    .hero-visual::before {
+      content: '';
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .hero-visual-content {
+      text-align: center;
+      z-index: 1;
+      color: #0A0A0A;
+    }
+
+    .hero-visual-content h3 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeIn 1.5s ease forwards 1.5s;
+    }
+
+    .hero-visual-content p {
+      font-size: 1.1rem;
+      opacity: 0;
+      animation: fadeIn 1.5s ease forwards 2s;
+    }
+
+    /* Features Grid */
+    .features h3, .demo h3, .about h3, .contact h3 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      font-weight: bold;
+      opacity: 0;
+      transform: translateY(40px);
+      animation: fadeInUp 1s ease forwards;
+      color: #2ECC71;
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    .feature-card {
+      background: #1A1A1A;
+      padding: 1.5rem;
+      border-radius: 16px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+      transition: transform 0.3s, box-shadow 0.3s;
+      transform: scale(0.9);
+      opacity: 0;
+      animation: fadeInScale 1s ease forwards;
+      cursor: pointer;
+    }
+    .feature-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(46, 204, 113,0.5);
+    }
+    .feature-card h4 {
+      color: #2ECC71;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+    .feature-card p { color: #AAAAAA; }
+
+    /* Page Headers */
+    .page-header {
+      background: #1A1A1A;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    .page-header h1 {
+      color: #2ECC71;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .page-header p {
+      color: #AAAAAA;
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Content Sections */
+    .content-section {
+      background: #0A0A0A;
+      padding: 3rem 2rem;
+    }
+    .content-section h2 {
+      color: #2ECC71;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+    .content-card {
+      background: #1A1A1A;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .content-card h3 {
+      color: #39FF14;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+    .content-card p, .content-card li {
+      color: #CCCCCC;
+      margin-bottom: 0.5rem;
+    }
+    .content-card ul {
+      padding-left: 1.5rem;
+    }
+
+    /* Demo Interface */
+    .demo-interface {
+      background: #1A1A1A;
+      border-radius: 16px;
+      padding: 2rem;
+      margin: 2rem 0;
+      border: 2px solid #2ECC71;
+    }
+    .demo-tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .demo-tab {
+      padding: 0.8rem 1.5rem;
+      background: #333;
+      border: none;
+      border-radius: 8px;
+      color: #F2F2F2;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .demo-tab.active {
+      background: #2ECC71;
+      color: #0A0A0A;
+    }
+    .demo-panel {
+      display: none;
+      background: #0A0A0A;
+      padding: 1.5rem;
+      border-radius: 12px;
+    }
+    .demo-panel.active {
+      display: block;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #2ECC71;
+      font-weight: bold;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #333;
+      background: #0A0A0A;
+      color: #F2F2F2;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: #2ECC71;
+    }
+
+    /* Statistics */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    .stat-card {
+      background: #1A1A1A;
+      padding: 2rem;
+      border-radius: 12px;
+      text-align: center;
+      border: 2px solid #2ECC71;
+    }
+    .stat-number {
+      font-size: 2.5rem;
+      color: #39FF14;
+      font-weight: bold;
+      display: block;
+    }
+    .stat-label {
+      color: #AAAAAA;
+      font-size: 1.1rem;
+    }
+
+    /* Success Messages */
+    .success-message {
+      position: fixed;
+      top: 100px;
+      right: 20px;
+      background: #2ECC71;
+      color: #0A0A0A;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      font-weight: bold;
+      z-index: 3000;
+      opacity: 0;
+      transform: translateX(100%);
+      animation: slideInRight 0.5s ease forwards, slideOutRight 0.5s ease forwards 3s;
+    }
+
+    /* Footer */
+    footer {
+      background: #27AE60;
+      color: #0A0A0A;
+      text-align: center;
+      padding: 1rem;
+      font-weight: bold;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      background: #1A1A1A;
+      padding: 1rem 2rem;
+      font-size: 0.9rem;
+    }
+    .breadcrumb a {
+      color: #2ECC71;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    .breadcrumb span {
+      color: #AAAAAA;
+    }
+
+    /* Back Button */
+    .back-button {
+      position: fixed;
+      bottom: 30px;
+      left: 30px;
+      background: #2ECC71;
+      color: #0A0A0A;
+      border: none;
+      padding: 1rem;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      z-index: 1000;
+      transition: all 0.3s;
+      box-shadow: 0 2px 10px rgba(46, 204, 113, 0.3);
+    }
+    .back-button:hover {
+      background: #39FF14;
+      transform: translateY(-2px);
+    }
+
+    /* Animations */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInLeft { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+    @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+    @keyframes fadeInScale { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+    @keyframes slideInRight { to { opacity: 1; transform: translateX(0); } }
+    @keyframes slideOutRight { to { opacity: 0; transform: translateX(100%); } }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero {
+        flex-direction: column;
+        text-align: center;
+      }
+      .hero-content {
+        max-width: 100%;
+        margin-bottom: 2rem;
+      }
+      .hero-visual {
+        margin-left: 0;
+        width: 100%;
+        height: 300px;
+      }
+      nav {
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      nav .links {
+        order: 3;
+        width: 100%;
+        text-align: center;
+      }
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+      .demo-tabs {
+        flex-direction: column;
+      }
+      .back-button {
+        bottom: 20px;
+        left: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo-container" onclick="showPage('home')">
+      <img src="Ayuva logo.png" alt="Ayuva Logo" class="logo">
+      <h1>Ayuva</h1>
+    </div>
+    <div class="links">
+      <a onclick="showPage('features')" id="nav-features">Features</a>
+      <a onclick="showPage('demo')" id="nav-demo">Demo</a>
+      <a onclick="showPage('about')" id="nav-about">About</a>
+      <a onclick="showPage('contact')" id="nav-contact">Contact</a>
+    </div>
+    <form onsubmit="joinWaitlist(event)">
+      <input type="email" name="email" placeholder="Email" required>
+      <button type="submit">Join Waitlist</button>
+    </form>
+  </nav>
+
+  <!-- HOME PAGE -->
+  <div id="home" class="page active">
+    <section class="hero">
+      <div class="hero-content">
+        <h2>Modern Nutrient Analysis <br> Meets <span>Ancient Ayurveda</span></h2>
+        <p>Tired of manual diet charts? Ayuva is the cloud platform that brings modern nutrient analysis together with ancient Ayurvedic wisdom, so you can generate holistic, accurate, and patient-focused diet charts in minutes.</p>
+        <button onclick="showPage('demo')">🚀 Try Demo</button>
+        <button class="outline" onclick="showPage('about')">📋 Learn More</button>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-visual-content">
+          <h3>Ayurvedic Intelligence</h3>
+          <p style="color: #000000;">  8000+ Foods • Modern Analytics • Ancient Wisdom</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="features" style="background: #1A1A1A;">
+      <h3>✨ Key Features</h3>
+      <div class="feature-grid">
+        <div class="feature-card" onclick="showPage('patient-profiles')">
+          <h4>👤 Patient Profiles</h4>
+          <p>Manage complete patient details including lifestyle, water intake, and bowel habits.</p>
+        </div>
+        <div class="feature-card" onclick="showPage('nutrient-tracking')">
+          <h4>🍎 Nutrient & Ayurvedic Tracking</h4>
+          <p>Combine modern nutrition metrics with Ayurvedic food properties.</p>
+        </div>
+        <div class="feature-card" onclick="showPage('diet-charts')">
+          <h4>📊 Automated Diet Charts</h4>
+          <p>Generate Ayurveda-compliant diet plans instantly with clear reports.</p>
+        </div>
+        <div class="feature-card" onclick="showPage('security')">
+          <h4>🔒 Secure & Compliant</h4>
+          <p>Protect patient data with HIPAA/local health law compliance.</p>
+        </div>
+        <div class="feature-card" onclick="showPage('mobile')">
+          <h4>📱 Mobile Ready</h4>
+          <p>Access and manage diet charts on smartphones and tablets.</p>
+        </div>
+        <div class="feature-card" onclick="showPage('integration')">
+          <h4>🔗 Integration</h4>
+          <p>Easily connect with HIS/EHR systems for hospitals and clinics.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="demo" style="background: #0A0A0A;">
+      <h3>🖥️ Live Demo Preview</h3>
+      <div style="text-align: center; padding: 3rem; background: #1A1A1A; border-radius: 16px; cursor: pointer;" onclick="showPage('demo')">
+        <div class="relative overflow-hidden rounded-2xl shadow-elevated animate-scale-in"><img src="ayuva demo pic.png" alt="Ayuva Dashboard Preview" class="w-full h-auto hover:scale-105 transition-transform duration-700"><div class="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent"></div><div class="absolute top-6 left-6 bg-primary/20 backdrop-blur-sm rounded-lg px-4 py-2 animate-fade-in-up"></div><div class="absolute bottom-6 right-6 bg-card/80 backdrop-blur-sm rounded-lg p-4 animate-fade-in-up"><div class="flex items-center gap-2"><div class="w-3 h-3 bg-primary rounded-full animate-pulse"></div></div></div></div>
+        <h4 style="color: #2ECC71; font-size: 3rem; margin-bottom: 1rem;">▶</h4>
+        <p style="color: #AAAAAA; font-size: 1.2rem;">Click to explore Ayuva's interactive dashboard</p>
+      </div>
+    </section>
+
+    <footer>
+      © 2025 Ayuva | Hackathon Project
+    </footer>
+  </div>
+
+  <!-- FEATURES PAGE -->
+  <div id="features" class="page">
+    <div class="breadcrumb">
+      <a onclick="showPage('home')">Home</a> <span>></span> <span>Features</span>
+    </div>
+    
+    <div class="page-header">
+      <h1>✨ Platform Features</h1>
+      <p>Discover how Ayuva revolutionizes Ayurvedic diet management with cutting-edge technology and ancient wisdom</p>
+    </div>
+
+    <div class="content-section">
+      <div class="feature-grid">
+        <div class="feature-card" onclick="showPage('patient-profiles')">
+          <h4>👤 Patient Profiles</h4>
+          <p>Comprehensive patient management with Ayurvedic assessments, lifestyle tracking, and health history.</p>
+        </div>
+        <div class="feature-card" onclick="showPage('nutrient-tracking')">
+          <h4>🍎 Nutrient & Ayurvedic Tracking</h4>
+          <p>Advanced analytics combining modern nutrition science with traditional Ayurvedic principles.</p>
+        </div>
+        <div class="feature-card" onclick="showPage('diet-charts')">
+          <h4>📊 Automated Diet Charts</h4>
+          <p>AI-powered diet generation based on individual constitution, health goals, and seasonal factors.</p>
+        </div>
+        <div class="feature-card" onclick="showPage('security')">
+          <h4>🔒 Security & Compliance</h4>
+          <p>Enterprise-grade security with HIPAA compliance and data protection protocols.</p>
+        </div>
+        <div class="feature-card" onclick="showPage('mobile')">
+          <h4>📱 Mobile Optimization</h4>
+          <p>Full mobile responsiveness for practitioners and patients on any device.</p>
+        </div>
+        <div class="feature-card" onclick="showPage('integration')">
+          <h4>🔗 System Integration</h4>
+          <p>Seamless integration with existing healthcare systems and electronic health records.</p>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      © 2025 Ayuva | Hackathon Project
+    </footer>
+  </div>
+
+  <!-- PATIENT PROFILES PAGE -->
+  <div id="patient-profiles" class="page">
+    <div class="breadcrumb">
+      <a onclick="showPage('home')">Home</a> <span>></span> <a onclick="showPage('features')">Features</a> <span>></span> <span>Patient Profiles</span>
+    </div>
+
+    <div class="page-header">
+      <h1>👤 Patient Profile Management</h1>
+      <p>Comprehensive patient data management with Ayurvedic constitutional analysis and lifestyle tracking</p>
+    </div>
+
+    <div class="content-section">
+      <div class="content-grid">
+        <div class="content-card">
+          <h3>Basic Information</h3>
+          <ul>
+            <li>Personal details (Name, Age, Gender, Contact)</li>
+            <li>Medical history and current medications</li>
+            <li>Allergies and dietary restrictions</li>
+            <li>Emergency contact information</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>Ayurvedic Assessment</h3>
+          <ul>
+            <li>Prakriti (Constitutional type) analysis</li>
+            <li>Vikriti (Current imbalance) evaluation</li>
+            <li>Digestive strength (Agni) assessment</li>
+            <li>Mental constitution (Sattva, Rajas, Tamas)</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>Lifestyle Tracking</h3>
+          <ul>
+            <li>Daily routine and sleep patterns</li>
+            <li>Exercise habits and physical activity</li>
+            <li>Stress levels and mental health</li>
+            <li>Water intake and hydration patterns</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>Health Monitoring</h3>
+          <ul>
+            <li>Bowel movement regularity and quality</li>
+            <li>Appetite patterns and digestion</li>
+            <li>Energy levels throughout the day</li>
+            <li>Symptoms and health complaints</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="demo-interface">
+        <h2>Sample Patient Profile Interface</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem;">
+          <div class="form-group">
+            <label>Patient Name</label>
+            <input type="text" value="Priya Sharma" readonly>
+          </div>
+          <div class="form-group">
+            <label>Age</label>
+            <input type="number" value="32" readonly>
+          </div>
+          <div class="form-group">
+            <label>Prakriti (Constitution)</label>
+            <select disabled>
+              <option>Vata-Pitta Dominant</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Current Health Focus</label>
+            <select disabled>
+              <option>Digestive Health</option>
+            </select>
+          </div>
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>Health Concerns</label>
+            <textarea readonly>Irregular appetite, bloating after meals, stress-related eating patterns, low energy in afternoons</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="back-button" onclick="showPage('features')" title="Back to Features">←</button>
+    
+    <footer>
+      © 2025 Ayuva | Hackathon Project
+    </footer>
+  </div>
+
+  <!-- NUTRIENT TRACKING PAGE -->
+  <div id="nutrient-tracking" class="page">
+    <div class="breadcrumb">
+      <a onclick="showPage('home')">Home</a> <span>></span> <a onclick="showPage('features')">Features</a> <span>></span> <span>Nutrient Tracking</span>
+    </div>
+
+    <div class="page-header">
+      <h1>🍎 Advanced Nutrient & Ayurvedic Tracking</h1>
+      <p>Combining modern nutritional science with ancient Ayurvedic food wisdom for holistic dietary analysis</p>
+    </div>
+
+    <div class="content-section">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-number">8000+</span>
+          <span class="stat-label">Food Items</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">25+</span>
+          <span class="stat-label">Nutrients Tracked</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">6</span>
+          <span class="stat-label">Ayurvedic Tastes</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">20+</span>
+          <span class="stat-label">Food Properties</span>
+        </div>
+      </div>
+
+      <div class="content-grid">
+        <div class="content-card">
+          <h3>Modern Nutrition Metrics</h3>
+          <ul>
+            <li>Macro nutrients (Carbs, Proteins, Fats)</li>
+            <li>Micro nutrients (Vitamins, Minerals)</li>
+            <li>Caloric density and energy content</li>
+            <li>Fiber, antioxidants, and phytonutrients</li>
+            <li>Glycemic index and load</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>Ayurvedic Properties</h3>
+          <ul>
+            <li>Rasa (6 tastes): Sweet, Sour, Salty, Pungent, Bitter, Astringent</li>
+            <li>Virya (Potency): Heating or Cooling effect</li>
+            <li>Vipaka (Post-digestive effect)</li>
+            <li>Guna (Qualities): Heavy/Light, Oily/Dry, etc.</li>
+            <li>Dosha effects on Vata, Pitta, Kapha</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>Food Database</h3>
+          <ul>
+            <li>Traditional Indian foods and recipes</li>
+            <li>Regional cuisines from across India</li>
+            <li>International and fusion foods</li>
+            <li>Seasonal and locally available ingredients</li>
+            <li>Organic and processed food variants</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>Analysis Features</h3>
+          <ul>
+            <li>Real-time nutritional calculations</li>
+            <li>Dosha balance analysis for meals</li>
+            <li>Seasonal appropriateness scoring</li>
+            <li>Digestibility and compatibility checks</li>
+            <li>Customized recommendations based on constitution</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="demo-interface">
+        <h2>Food Analysis Demo</h2>
+        <div class="demo-tabs">
+          <button class="demo-tab active" onclick="switchNutrientTab(event, 'food-search')">Food Search</button>
+          <button class="demo-tab" onclick="switchNutrientTab(event, 'nutrition-analysis')">Nutrition Analysis</button>
+          <button class="demo-tab" onclick="switchNutrientTab(event, 'ayurvedic-properties')">Ayurvedic Properties</button>
+        </div>
+
+        <div id="food-search" class="demo-panel active">
+          <div class="form-group">
+            <label>Search Food Item</label>
+            <input type="text" placeholder="e.g., Basmati Rice, Moong Dal, Ghee" value="Basmati Rice" readonly>
+          </div>
+          <div style="background: #000; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+            <h4 style="color: #2ECC71;">Search Results:</h4>
+            <p>✓ Basmati Rice (White, Cooked)</p>
+            <p>✓ Basmati Rice (Brown, Cooked)</p>
+            <p>✓ Basmati Rice (Raw, 1 cup)</p>
+            <p style="color: #AAAAAA; font-size: 0.9rem; margin-top: 1rem;">Database contains regional variants, cooking methods, and seasonal preparations</p>
+          </div>
+        </div>
+
+        <div id="nutrition-analysis" class="demo-panel">
+          <div style="background: #000; padding: 1rem; border-radius: 8px;">
+            <h4 style="color: #2ECC71;">Basmati Rice (1 cup cooked) - Nutritional Profile</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+              <div>
+                <strong style="color: #39FF14;">Macronutrients:</strong>
+                <p>Calories: 205 kcal</p>
+                <p>Carbohydrates: 45g</p>
+                <p>Protein: 4.3g</p>
+                <p>Fat: 0.4g</p>
+                <p>Fiber: 0.6g</p>
+              </div>
+              <div>
+                <strong style="color: #39FF14;">Key Micronutrients:</strong>
+                <p>Manganese: 0.9mg</p>
+                <p>Niacin: 2.3mg</p>
+                <p>Thiamine: 0.2mg</p>
+                <p>Folate: 8mcg</p>
+                <p>Iron: 0.8mg</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="ayurvedic-properties" class="demo-panel">
+          <div style="background: #000; padding: 1rem; border-radius: 8px;">
+            <h4 style="color: #2ECC71;">Basmati Rice - Ayurvedic Analysis</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+              <div>
+                <strong style="color: #39FF14;">Primary Properties:</strong>
+                <p><strong>Rasa:</strong> Sweet (Madhura)</p>
+                <p><strong>Virya:</strong> Cooling (Sheeta)</p>
+                <p><strong>Vipaka:</strong> Sweet (Madhura)</p>
+                <p><strong>Guna:</strong> Heavy (Guru), Smooth (Snigdha)</p>
+              </div>
+              <div>
+                <strong style="color: #39FF14;">Dosha Effects:</strong>
+                <p><strong>Vata:</strong> ↓ Pacifying (Good)</p>
+                <p><strong>Pitta:</strong> ↓ Pacifying (Good)</p>
+                <p><strong>Kapha:</strong> ↑ Increasing (Moderate)</p>
+                <p><strong>Best For:</strong> Vata-Pitta types</p>
+              </div>
+            </div>
+            <p style="color: #AAAAAA; margin-top: 1rem; font-style: italic;">
+              Recommendation: Excellent base food for most constitutions. Best consumed with digestive spices for Kapha types.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="back-button" onclick="showPage('features')" title="Back to Features">←</button>
+    
+    <footer>
+      © 2025 Ayuva | Hackathon Project
+    </footer>
+  </div>
+
+  <!-- DIET CHARTS PAGE -->
+  <div id="diet-charts" class="page">
+    <div class="breadcrumb">
+      <a onclick="showPage('home')">Home</a> <span>></span> <a onclick="showPage('features')">Features</a> <span>></span> <span>Diet Charts</span>
+    </div>
+
+    <div class="page-header">
+      <h1>📊 Automated Diet Chart Generation</h1>
+      <p>AI-powered diet planning that combines nutritional science with Ayurvedic principles for personalized wellness</p>
+    </div>
+
+    <div class="content-section">
+      <div class="content-grid">
+        <div class="content-card">
+          <h3>Intelligent Planning</h3>
+          <ul>
+            <li>AI algorithms analyze patient constitution</li>
+            <li>Considers current health goals and restrictions</li>
+            <li>Factors in seasonal and local food availability</li>
+            <li>Balances all nutritional requirements</li>
+            <li>Ensures Ayurvedic compatibility</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>Customization Options</h3>
+          <ul>
+            <li>Meal timing based on individual schedule</li>
+            <li>Portion sizes adjusted for age and activity</li>
+            <li>Regional cuisine preferences</li>
+            <li>Cooking method recommendations</li>
+            <li>Substitute suggestions for allergies</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>Professional Reports</h3>
+          <ul>
+            <li>Detailed nutritional breakdown</li>
+            <li>Ayurvedic rationale for each meal</li>
+            <li>Shopping lists with quantities</li>
+            <li>Recipe instructions and tips</li>
+            <li>Progress tracking metrics</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>Compliance Features</h3>
+          <ul>
+            <li>Patient-friendly format and language</li>
+            <li>Visual meal planning calendars</li>
+            <li>Mobile-accessible digital copies</li>
+            <li>Reminder and notification system</li>
+            <li>Feedback collection mechanisms</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="demo-interface">
+        <h2>Sample Generated Diet Chart</h2>
+        <div style="background: #000; padding: 2rem; border-radius: 12px;">
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <h3 style="color: #2ECC71;">Weekly Diet Plan - Priya Sharma</h3>
+            <p style="color: #AAAAAA;">Constitution: Vata-Pitta | Goal: Digestive Health | Duration: Week 1-2</p>
+          </div>
+          
+          <div style="margin-bottom: 2rem;">
+            <h4 style="color: #39FF14; margin-bottom: 1rem;">Monday Schedule</h4>
+            
+            <div style="background: #1A1A1A; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+              <strong style="color: #2ECC71;">Early Morning (6:00 AM)</strong>
+              <p>• Warm water with fresh lemon juice and ginger</p>
+              <p style="color: #AAAAAA; font-size: 0.9rem;">Purpose: Stimulates digestion, balances Vata</p>
+            </div>
+
+            <div style="background: #1A1A1A; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+              <strong style="color: #2ECC71;">Breakfast (8:00 AM)</strong>
+              <p>• Oats porridge with almonds, dates, and cinnamon</p>
+              <p>• Herbal tea (Tulsi or Ginger)</p>
+              <p style="color: #AAAAAA; font-size: 0.9rem;">
+                Nutrition: 320 kcal, 12g protein, 8g fiber | Rasa: Sweet, Astringent | Effect: Vata ↓, Pitta ↓
+              </p>
+            </div>
+
+            <div style="background: #1A1A1A; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+              <strong style="color: #2ECC71;">Mid-Morning (10:30 AM)</strong>
+              <p>• Fresh seasonal fruit - 1 medium apple or pear</p>
+              <p style="color: #AAAAAA; font-size: 0.9rem;">Best eaten alone to aid digestion</p>
+            </div>
+
+            <div style="background: #1A1A1A; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+              <strong style="color: #2ECC71;">Lunch (12:30 PM)</strong>
+              <p>• Brown basmati rice with moong dal khichdi</p>
+              <p>• Steamed seasonal vegetables with ghee</p>
+              <p>• Fresh buttermilk with roasted cumin</p>
+              <p style="color: #AAAAAA; font-size: 0.9rem;">
+                Nutrition: 485 kcal, 18g protein, 12g fiber | All six tastes balanced | Ideal for Vata-Pitta
+              </p>
+            </div>
+
+            <div style="background: #1A1A1A; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+              <strong style="color: #2ECC71;">Evening (4:00 PM)</strong>
+              <p>• Handful of soaked almonds (5-6 pieces)</p>
+              <p>• Herbal tea or coconut water</p>
+            </div>
+
+            <div style="background: #1A1A1A; padding: 1rem; border-radius: 8px;">
+              <strong style="color: #2ECC71;">Dinner (7:00 PM)</strong>
+              <p>• Light vegetable soup with whole grain bread</p>
+              <p>• Sautéed greens with minimal spices</p>
+              <p>• Warm milk with a pinch of turmeric (optional)</p>
+              <p style="color: #AAAAAA; font-size: 0.9rem;">
+                Nutrition: 280 kcal, 10g protein | Light and easy to digest for evening
+              </p>
+            </div>
+          </div>
+
+          <div style="background: #1A1A1A; padding: 1rem; border-radius: 8px;">
+            <h4 style="color: #39FF14; margin-bottom: 0.5rem;">Daily Guidelines</h4>
+            <p>• Eat at regular times to support digestive rhythm</p>
+            <p>• Chew food thoroughly and eat in a calm environment</p>
+            <p>• Avoid cold drinks with meals</p>
+            <p>• Take a short walk after lunch</p>
+            <p>• Maintain 3-hour gap between dinner and sleep</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="back-button" onclick="showPage('features')" title="Back to Features">←</button>
+    
+    <footer>
+      © 2025 Ayuva | Hackathon Project
+    </footer>
+  </div>
+
+  <!-- SECURITY PAGE -->
+  <div id="security" class="page">
+    <div class="breadcrumb">
+      <a onclick="showPage('home')">Home</a> <span>></span> <a onclick="showPage('features')">Features</a> <span>></span> <span>Security & Compliance</span>
+    </div>
+
+    <div class="page-header">
+      <h1>🔒 Security & Compliance</h1>
+      <p>Enterprise-grade security measures ensuring complete protection of sensitive patient health data</p>
+    </div>
+
+    <div class="content-section">
+      <div class="content-grid">
+        <div class="content-card">
+          <h3>Data Protection</h3>
+          <ul>
+            <li>End-to-end encryption for all data transmission</li>
+            <li>AES-256 encryption for data at rest</li>
+            <li>Regular security audits and penetration testing</li>
+            <li>Secure cloud infrastructure with redundancy</li>
+            <li>Automated backup and disaster recovery</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>Compliance Standards</h3>
+          <ul>
+            <li>HIPAA compliance for US healthcare providers</li>
+            <li>GDPR compliance for European operations</li>
+            <li>Indian IT Act 2000 and DPDP Act compliance</li>
+            <li>SOC 2 Type II certification</li>
+            <li>ISO 27001 information security management</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>Access Control</h3>
+          <ul>
+            <li>Multi-factor authentication (MFA)</li>
+            <li>Role-based access control (RBAC)</li>
+            <li>Session management and timeout controls</li>
+            <li>Audit trails for all user activities</li>
+            <li>IP whitelisting and geo-restrictions</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>Privacy Features</h3>
+          <ul>
+            <li>Data anonymization and pseudonymization</li>
+            <li>Patient consent management</li>
+            <li>Right to data portability and deletion</li>
+            <li>Minimal data collection principles</li>
+            <li>Transparent privacy policy and practices</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="demo-interface">
+        <h2>Security Dashboard Preview</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-number">99.9%</span>
+            <span class="stat-label">Uptime SLA</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">0</span>
+            <span class="stat-label">Data Breaches</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">24/7</span>
+            <span class="stat-label">Security Monitoring</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">256-bit</span>
+            <span class="stat-label">Encryption Standard</span>
+          </div>
+        </div>
+        
+        <div style="background: #000; padding: 1.5rem; border-radius: 8px; margin-top: 2rem;">
+          <h4 style="color: #2ECC71; margin-bottom: 1rem;">Recent Security Events</h4>
+          <div style="color: #AAAAAA;">
+            <p>✅ Daily backup completed successfully - 2 hours ago</p>
+            <p>✅ Security scan completed - No threats detected - 6 hours ago</p>
+            <p>✅ SSL certificates renewed automatically - 1 day ago</p>
+            <p>✅ User authentication logs reviewed - 1 day ago</p>
+            <p>✅ Data access audit completed - 2 days ago</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="back-button" onclick="showPage('features')" title="Back to Features">←</button>
+    
+    <footer>
+      © 2025 Ayuva | Hackathon Project
+    </footer>
+  </div>
+
+  <!-- MOBILE PAGE -->
+  <div id="mobile" class="page">
+    <div class="breadcrumb">
+      <a onclick="showPage('home')">Home</a> <span>></span> <a onclick="showPage('features')">Features</a> <span>></span> <span>Mobile Ready</span>
+    </div>
+
+    <div class="page-header">
+      <h1>📱 Mobile-First Design</h1>
+      <p>Full platform functionality optimized for smartphones and tablets, enabling healthcare on-the-go</p>
+    </div>
+
+    <div class="content-section">
+      <div class="content-grid">
+        <div class="content-card">
+          <h3>Responsive Design</h3>
+          <ul>
+            <li>Adaptive layouts for all screen sizes</li>
+            <li>Touch-optimized interface elements</li>
+            <li>Fast loading on mobile networks</li>
+            <li>Offline capability for essential features</li>
+            <li>Progressive Web App (PWA) support</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>Practitioner Mobile Features</h3>
+          <ul>
+            <li>Quick patient lookup and profile access</li>
+            <li>On-the-go diet chart generation</li>
+            <li>Voice notes and dictation support</li>
+            <li>Camera integration for food documentation</li>
+            <li>Push notifications for appointments</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>Patient Mobile Experience</h3>
+          <ul>
+            <li>Personal diet chart access anytime</li>
+            <li>Meal logging with photo capture</li>
+            <li>Symptom tracking and progress updates</li>
+            <li>Recipe videos and cooking instructions</li>
+            <li>Direct messaging with practitioners</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>Mobile Performance</h3>
+          <ul>
+            <li>Less than 3-second load times</li>
+            <li>Optimized data usage for rural areas</li>
+            <li>Works on 3G/4G networks reliably</li>
+            <li>Battery-efficient background processes</li>
+            <li>Secure biometric authentication</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="demo-interface">
+        <h2>Mobile Interface Preview</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+          <div style="background: #000; padding: 1.5rem; border-radius: 12px;">
+            <h4 style="color: #2ECC71; text-align: center; margin-bottom: 1rem;">Practitioner Dashboard</h4>
+            <div style="background: #1A1A1A; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+              <p style="color: #39FF14;">📊 Today's Consultations: 8</p>
+              <p style="color: #AAAAAA;">🕐 Next Appointment: 2:30 PM</p>
+            </div>
+            <div style="background: #1A1A1A; padding: 0.8rem; border-radius: 6px; margin-bottom: 0.5rem;">
+              <p style="font-size: 0.9rem;">👤 Priya Sharma - Follow-up</p>
+            </div>
+            <div style="background: #1A1A1A; padding: 0.8rem; border-radius: 6px; margin-bottom: 0.5rem;">
+              <p style="font-size: 0.9rem;">👤 Raj Patel - New Consultation</p>
+            </div>
+            <button style="width: 100%; margin-top: 1rem;">+ Add New Patient</button>
+          </div>
+
+          <div style="background: #000; padding: 1.5rem; border-radius: 12px;">
+            <h4 style="color: #2ECC71; text-align: center; margin-bottom: 1rem;">Patient View</h4>
+            <div style="background: #1A1A1A; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+              <p style="color: #39FF14;">📋 Today's Meals</p>
+              <p style="color: #AAAAAA;">Breakfast ✅ Lunch ⏳ Dinner ⏳</p>
+            </div>
+            <div style="background: #1A1A1A; padding: 0.8rem; border-radius: 6px; margin-bottom: 0.5rem;">
+              <p style="font-size: 0.9rem;">🥗 Log Current Meal</p>
+            </div>
+            <div style="background: #1A1A1A; padding: 0.8rem; border-radius: 6px; margin-bottom: 0.5rem;">
+              <p style="font-size: 0.9rem;">📈 View Progress Report</p>
+            </div>
+            <button style="width: 100%; margin-top: 1rem;">📞 Contact Practitioner</button>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 2rem; padding: 1rem; background: #1A1A1A; border-radius: 8px;">
+          <p style="color: #AAAAAA; font-style: italic;">
+            "The mobile interface is so intuitive. I can update patient charts between consultations and patients love having their diet plans on their phones!" 
+            <br><strong style="color: #2ECC71;">- Dr. Anjali Mehta, Ayurvedic Physician</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <button class="back-button" onclick="showPage('features')" title="Back to Features">←</button>
+    
+    <footer>
+      © 2025 Ayuva | Hackathon Project
+    </footer>
+  </div>
+
+  <!-- INTEGRATION PAGE -->
+  <div id="integration" class="page">
+    <div class="breadcrumb">
+      <a onclick="showPage('home')">Home</a> <span>></span> <a onclick="showPage('features')">Features</a> <span>></span> <span>System Integration</span>
+    </div>
+
+    <div class="page-header">
+      <h1>🔗 Seamless System Integration</h1>
+      <p>Connect Ayuva with existing healthcare infrastructure for unified patient care and streamlined workflows</p>
+    </div>
+
+    <div class="content-section">
+      <div class="content-grid">
+        <div class="content-card">
+          <h3>EHR Integration</h3>
+          <ul>
+            <li>HL7 FHIR standard compliance</li>
+            <li>Real-time data synchronization</li>
+            <li>Patient demographics auto-population</li>
+            <li>Medical history import/export</li>
+            <li>Bi-directional data flow</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>Hospital Information Systems</h3>
+          <ul>
+            <li>Appointment scheduling integration</li>
+            <li>Billing and insurance processing</li>
+            <li>Lab results and diagnostics</li>
+            <li>Pharmacy and medication management</li>
+            <li>Reporting and analytics dashboards</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>Third-Party Applications</h3>
+          <ul>
+            <li>Fitness and wellness apps</li>
+            <li>Telemedicine platforms</li>
+            <li>Laboratory information systems</li>
+            <li>Prescription management tools</li>
+            <li>Patient portal integration</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>API & Development</h3>
+          <ul>
+            <li>RESTful API with comprehensive documentation</li>
+            <li>Webhook support for real-time notifications</li>
+            <li>SDK for rapid integration development</li>
+            <li>Sandbox environment for testing</li>
+            <li>24/7 developer support and guidance</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="demo-interface">
+        <h2>Integration Architecture</h2>
+        <div style="background: #000; padding: 2rem; border-radius: 12px;">
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <h4 style="color: #2ECC71;">Ayuva Platform Ecosystem</h4>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; text-align: center;">
+            <div style="background: #1A1A1A; padding: 1rem; border-radius: 8px;">
+              <h5 style="color: #39FF14; margin-bottom: 0.5rem;">EHR Systems</h5>
+              <p style="font-size: 0.9rem; color: #AAAAAA;">Epic, Cerner, AllScripts</p>
+            </div>
+            <div style="background: #2ECC71; padding: 1rem; border-radius: 8px; color: #0A0A0A;">
+              <h5 style="margin-bottom: 0.5rem; font-weight: bold;">AYUVA CORE</h5>
+              <p style="font-size: 0.9rem;">Central Platform</p>
+            </div>
+            <div style="background: #1A1A1A; padding: 1rem; border-radius: 8px;">
+              <h5 style="color: #39FF14; margin-bottom: 0.5rem;">Lab Systems</h5>
+              <p style="font-size: 0.9rem; color: #AAAAAA;">LabCorp, Quest, Local Labs</p>
+            </div>
+            <div style="background: #1A1A1A; padding: 1rem; border-radius: 8px;">
+              <h5 style="color: #39FF14; margin-bottom: 0.5rem;">HIS Platforms</h5>
+              <p style="font-size: 0.9rem; color: #AAAAAA;">Hospital Management</p>
+            </div>
+            <div style="background: #1A1A1A; padding: 1rem; border-radius: 8px;">
+              <h5 style="color: #39FF14; margin-bottom: 0.5rem;">Mobile Apps</h5>
+              <p style="font-size: 0.9rem; color: #AAAAAA;">iOS, Android, Web</p>
+            </div>
+            <div style="background: #1A1A1A; padding: 1rem; border-radius: 8px;">
+              <h5 style="color: #39FF14; margin-bottom: 0.5rem;">Analytics</h5>
+              <p style="font-size: 0.9rem; color: #AAAAAA;">BI Tools, Reports</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #000; padding: 1.5rem; border-radius: 8px; margin-top: 2rem;">
+          <h4 style="color: #2ECC71; margin-bottom: 1rem;">Sample API Integration</h4>
+          <div style="background: #1A1A1A; padding: 1rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem;">
+            <span style="color: #39FF14;">POST</span> <span style="color: #2ECC71;">/api/v1/patients/create</span><br>
+            <span style="color: #AAAAAA;">{</span><br>
+            <span style="color: #AAAAAA;">&nbsp;&nbsp;"patient_id": "12345",</span><br>
+            <span style="color: #AAAAAA;">&nbsp;&nbsp;"ehr_system": "epic",</span><br>
+            <span style="color: #AAAAAA;">&nbsp;&nbsp;"sync_medical_history": true,</span><br>
+            <span style="color: #AAAAAA;">&nbsp;&nbsp;"ayurvedic_assessment": {</span><br>
+            <span style="color: #AAAAAA;">&nbsp;&nbsp;&nbsp;&nbsp;"prakriti": "vata_pitta"</span><br>
+            <span style="color: #AAAAAA;">&nbsp;&nbsp;}</span><br>
+            <span style="color: #AAAAAA;">}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="back-button" onclick="showPage('features')" title="Back to Features">←</button>
+    
+    <footer>
+      © 2025 Ayuva | Hackathon Project
+    </footer>
+  </div>
+
+  <!-- DEMO PAGE -->
+  <div id="demo" class="page">
+    <div class="breadcrumb">
+      <a onclick="showPage('home')">Home</a> <span>></span> <span>Live Demo</span>
+    </div>
+
+    <div class="page-header">
+      <h1>🖥️ Interactive Platform Demo</h1>
+      <p>Experience Ayuva's comprehensive features through our interactive demonstration platform</p>
+    </div>
+
+    <div class="content-section">
+      <div class="demo-interface">
+        <div class="demo-tabs">
+          <button class="demo-tab active" onclick="switchDemoTab(event, 'patient-management-demo')">Patient Management</button>
+          <button class="demo-tab" onclick="switchDemoTab(event, 'diet-generation-demo')">Diet Generation</button>
+          <button class="demo-tab" onclick="switchDemoTab(event, 'analytics-demo')">Analytics Dashboard</button>
+          <button class="demo-tab" onclick="switchDemoTab(event, 'food-database-demo')">Food Database</button>
+        </div>
+
+        <div id="patient-management-demo" class="demo-panel active">
+          <h3 style="color: #2ECC71; margin-bottom: 1.5rem;">Patient Profile Management System</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <div>
+              <div class="form-group">
+                <label>Patient Name</label>
+                <input type="text" id="demo-patient-name" value="Priya Sharma">
+              </div>
+              <div class="form-group">
+                <label>Age</label>
+                <input type="number" id="demo-age" value="32">
+              </div>
+              <div class="form-group">
+                <label>Gender</label>
+                <select id="demo-gender">
+                  <option value="female" selected>Female</option>
+                  <option value="male">Male</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Primary Constitution (Prakriti)</label>
+                <select id="demo-prakriti">
+                  <option value="vata-pitta" selected>Vata-Pitta</option>
+                  <option value="pitta-kapha">Pitta-Kapha</option>
+                  <option value="vata-kapha">Vata-Kapha</option>
+                  <option value="vata">Pure Vata</option>
+                  <option value="pitta">Pure Pitta</option>
+                  <option value="kapha">Pure Kapha</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <div class="form-group">
+                <label>Current Health Goals</label>
+                <select id="demo-goals">
+                  <option value="digestive" selected>Improve Digestive Health</option>
+                  <option value="weight">Weight Management</option>
+                  <option value="energy">Boost Energy Levels</option>
+                  <option value="stress">Stress Management</option>
+                  <option value="immunity">Enhance Immunity</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Activity Level</label>
+                <select id="demo-activity">
+                  <option value="sedentary">Sedentary</option>
+                  <option value="light" selected>Light Activity</option>
+                  <option value="moderate">Moderate Activity</option>
+                  <option value="active">Very Active</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Dietary Restrictions</label>
+                <input type="text" id="demo-restrictions" value="Vegetarian, No dairy after 6 PM">
+              </div>
+              <div class="form-group">
+                <label>Current Symptoms</label>
+                <textarea id="demo-symptoms" rows="3">Irregular appetite, bloating after meals, afternoon energy dips</textarea>
+              </div>
+            </div>
+          </div>
+          <div style="text-align: center; margin-top: 2rem;">
+            <button onclick="updatePatientDemo()">🔄 Update Profile</button>
+           <button onclick="window.location.href='diet_plan.html'" style="margin-left: 1rem;">
+  📊 Generate Diet Plan
+</button>
+</div>
+          <div id="patient-update-result" style="margin-top: 1rem; padding: 1rem; background: #000; border-radius: 8px; display: none;">
+            <p style="color: #2ECC71;">✅ Patient profile updated successfully!</p>
+          </div>
+        </div>
+
+        <div id="diet-generation-demo" class="demo-panel">
+          <h3 style="color: #2ECC71; margin-bottom: 1.5rem;">AI-Powered Diet Chart Generation</h3>
+          <div style="background: #000; padding: 1.5rem; border-radius: 8px;">
+            <h4 style="color: #39FF14; margin-bottom: 1rem;">Generated Diet Plan - Priya Sharma</h4>
+            <p style="color: #AAAAAA; margin-bottom: 2rem;">Based on: Vata-Pitta constitution, Digestive health goals, Vegetarian preferences</p>
+            
+            <div class="demo-tabs" style="margin-bottom: 1rem;">
+              <button class="demo-tab active" onclick="switchMealTab(event, 'day1')">Day 1</button>
+              <button class="demo-tab" onclick="switchMealTab(event, 'day2')">Day 2</button>
+              <button class="demo-tab" onclick="switchMealTab(event, 'day3')">Day 3</button>
+            </div>
+
+            <div id="day1" class="demo-panel active">
+              <div style="background: #1A1A1A; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                <h5 style="color: #2ECC71;">🌅 Early Morning (6:00 AM)</h5>
+                <p>• Warm water with fresh lemon and ginger slice</p>
+                <p style="color: #AAAAAA; font-size: 0.9rem;">Aids digestion, balances Vata dosha</p>
+              </div>
+              
+              <div style="background: #1A1A1A; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                <h5 style="color: #2ECC71;">🥣 Breakfast (8:00 AM)</h5>
+                <p>• Steel-cut oats porridge with almonds, dates, and cinnamon</p>
+                <p>• Ginger-tulsi herbal tea</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem;">
+                  <p style="color: #39FF14; font-size: 0.9rem;">Nutrition: 340 kcal, 12g protein, 8g fiber</p>
+                  <p style="color: #39FF14; font-size: 0.9rem;">Rasa: Sweet, Astringent | Effect: V↓ P↓</p>
+                </div>
+              </div>
+
+              <div style="background: #1A1A1A; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                <h5 style="color: #2ECC71;">🍎 Mid-Morning (10:30 AM)</h5>
+                <p>• Fresh seasonal fruit (1 medium apple or pear)</p>
+                <p style="color: #AAAAAA; font-size: 0.9rem;">Eaten alone to optimize digestion</p>
+              </div>
+
+              <div style="background: #1A1A1A; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                <h5 style="color: #2ECC71;">🍛 Lunch (12:30 PM)</h5>
+                <p>• Brown rice khichdi with moong dal and turmeric</p>
+                <p>• Steamed seasonal vegetables with a teaspoon of ghee</p>
+                <p>• Fresh buttermilk with roasted cumin and mint</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem;">
+                  <p style="color: #39FF14; font-size: 0.9rem;">Nutrition: 485 kcal, 18g protein, 12g fiber</p>
+                  <p style="color: #39FF14; font-size: 0.9rem;">All 6 tastes balanced | Tridosha balancing</p>
+                </div>
+              </div>
+
+              <div style="background: #1A1A1A; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                <h5 style="color: #2ECC71;">☕ Evening (4:00 PM)</h5>
+                <p>• Handful of soaked almonds (5-6 pieces)</p>
+                <p>• Herbal tea (fennel or chamomile)</p>
+              </div>
+
+              <div style="background: #1A1A1A; padding: 1rem; border-radius: 8px;">
+                <h5 style="color: #2ECC71;">🍲 Dinner (7:00 PM)</h5>
+                <p>• Light vegetable soup with whole grain bread</p>
+                <p>• Sautéed leafy greens with minimal spices</p>
+                <p>• Optional: Warm almond milk with a pinch of turmeric</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem;">
+                  <p style="color: #39FF14; font-size: 0.9rem;">Nutrition: 280 kcal, 10g protein, 6g fiber</p>
+                  <p style="color: #39FF14; font-size: 0.9rem;">Light, easy to digest for evening</p>
+                </div>
+              </div>
+            </div>
+
+            <div id="day2" class="demo-panel">
+              <div style="color: #AAAAAA; text-align: center; padding: 2rem;">
+                <h5 style="color: #2ECC71;">Day 2 - Variation with Seasonal Adjustments</h5>
+                <p>Similar structure with rotated food choices to prevent monotony and ensure nutritional variety</p>
+                <p>Includes quinoa breakfast, mixed lentil curry for lunch, and herbed vegetable stir-fry for dinner</p>
+              </div>
+            </div>
+
+            <div id="day3" class="demo-panel">
+              <div style="color: #AAAAAA; text-align: center; padding: 2rem;">
+                <h5 style="color: #2ECC71;">Day 3 - Weekend Special</h5>
+                <p>Slightly more elaborate meals suitable for weekend preparation</p>
+                <p>Features traditional recipes with modern nutritional optimization</p>
+              </div>
+            </div>
+          </div>
+          
+          <div style="text-align: center; margin-top: 2rem;">
+            <button onclick="exportDietChart()">📄 Export PDF</button>
+            <button onclick="customizeDiet()" style="margin-left: 1rem;">⚙️ Customize Plan</button>
+            <button onclick="scheduleFollowUp()" style="margin-left: 1rem;">📅 Schedule Follow-up</button>
+          </div>
+        </div>
+
+        <div id="analytics-demo" class="demo-panel">
+          <h3 style="color: #2ECC71; margin-bottom: 1.5rem;">Patient Progress Analytics</h3>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <span class="stat-number">87%</span>
+              <span class="stat-label">Diet Compliance Rate</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">+15%</span>
+              <span class="stat-label">Energy Level Improvement</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">-32%</span>
+              <span class="stat-label">Digestive Complaints</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">4.3/5</span>
+              <span class="stat-label">Patient Satisfaction</span>
+            </div>
+          </div>
+
+          <div style="background: #000; padding: 1.5rem; border-radius: 8px; margin-top: 2rem;">
+            <h4 style="color: #2ECC71; margin-bottom: 1rem;">Weekly Progress Summary</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+              <div>
+                <h5 style="color: #39FF14; margin-bottom: 0.5rem;">Positive Changes:</h5>
+                <ul style="color: #CCCCCC; padding-left: 1.5rem;">
+                  <li>Improved sleep quality and duration</li>
+                  <li>More regular appetite patterns</li>
+                  <li>Reduced bloating after meals</li>
+                  <li>Stable energy throughout the day</li>
+                  <li>Better mood and mental clarity</li>
+                </ul>
+              </div>
+              <div>
+                <h5 style="color: #39FF14; margin-bottom: 0.5rem;">Areas for Focus:</h5>
+                <ul style="color: #CCCCCC; padding-left: 1.5rem;">
+                  <li>Increase water intake between meals</li>
+                  <li>Add more walking after lunch</li>
+                  <li>Consider adding yoga or meditation</li>
+                  <li>Monitor portion sizes at dinner</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div style="background: #000; padding: 1.5rem; border-radius: 8px; margin-top: 1rem;">
+            <h4 style="color: #2ECC71; margin-bottom: 1rem;">Dosha Balance Tracking</h4>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+              <div style="text-align: center; background: #1A1A1A; padding: 1rem; border-radius: 8px;">
+                <h5 style="color: #39FF14;">VATA</h5>
+                <p style="color: #CCCCCC; font-size: 2rem;">↓</p>
+                <p style="color: #AAAAAA; font-size: 0.9rem;">Reduced from baseline</p>
+              </div>
+              <div style="text-align: center; background: #1A1A1A; padding: 1rem; border-radius: 8px;">
+                <h5 style="color: #39FF14;">PITTA</h5>
+                <p style="color: #CCCCCC; font-size: 2rem;">→</p>
+                <p style="color: #AAAAAA; font-size: 0.9rem;">Stable and balanced</p>
+              </div>
+              <div style="text-align: center; background: #1A1A1A; padding: 1rem; border-radius: 8px;">
+                <h5 style="color: #39FF14;">KAPHA</h5>
+                <p style="color: #CCCCCC; font-size: 2rem;">↑</p>
+                <p style="color: #AAAAAA; font-size: 0.9rem;">Slightly increased (positive)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="food-database-demo" class="demo-panel">
+          <h3 style="color: #2ECC71; margin-bottom: 1.5rem;">Comprehensive Food Database</h3>
+          <div style="background: #000; padding: 1.5rem; border-radius: 8px;">
+            <div class="form-group" style="margin-bottom: 2rem;">
+              <label>Search Food Database (8000+ items)</label>
+              <input type="text" id="food-search" placeholder="Try: basmati rice, moong dal, ghee, spinach..." oninput="searchFoodDemo(this.value)">
+            </div>
+
+            <div id="food-search-results">
+              <h4 style="color: #39FF14; margin-bottom: 1rem;">Popular Foods:</h4>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                <div class="content-card" onclick="showFoodDetails('basmati-rice')" style="cursor: pointer; margin: 0;">
+                  <h5 style="color: #2ECC71;">🍚 Basmati Rice (White, Cooked)</h5>
+                  <p style="font-size: 0.9rem; margin: 0;">205 kcal per cup | Sweet rasa | Cooling</p>
+                </div>
+                <div class="content-card" onclick="showFoodDetails('moong-dal')" style="cursor: pointer; margin: 0;">
+                  <h5 style="color: #2ECC71;">🫛 Moong Dal (Split, Cooked)</h5>
+                  <p style="font-size: 0.9rem; margin: 0;">230 kcal per cup | Sweet, astringent | Cooling</p>
+                </div>
+                <div class="content-card" onclick="showFoodDetails('ghee')" style="cursor: pointer; margin: 0;">
+                  <h5 style="color: #2ECC71;">🧈 Ghee (Clarified Butter)</h5>
+                  <p style="font-size: 0.9rem; margin: 0;">112 kcal per tbsp | Sweet | Heating</p>
+                </div>
+                <div class="content-card" onclick="showFoodDetails('spinach')" style="cursor: pointer; margin: 0;">
+                  <h5 style="color: #2ECC71;">🥬 Spinach (Fresh, Raw)</h5>
+                  <p style="font-size: 0.9rem; margin: 0;">7 kcal per cup | Bitter, astringent | Cooling</p>
+                </div>
+              </div>
+            </div>
+
+            <div id="food-details" style="margin-top: 2rem; display: none;">
+              <!-- Food details will be populated by JavaScript -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="back-button" onclick="showPage('home')" title="Back to Home">←</button>
+    
+    <footer>
+      © 2025 Ayuva | Hackathon Project
+    </footer>
+  </div>
+
+  <!-- ABOUT PAGE -->
+  <div id="about" class="page">
+    <div class="breadcrumb">
+      <a onclick="showPage('home')">Home</a> <span>></span> <span>About</span>
+    </div>
+
+    <div class="page-header">
+      <h1>🌱 About Ayuva</h1>
+      <p>Bridging the gap between modern nutrition science and ancient Ayurvedic wisdom for holistic healthcare</p>
+    </div>
+
+    <div class="content-section">
+      <div class="content-grid">
+        <div class="content-card">
+          <h3>The Problem We Solve</h3>
+          <p>Currently, Ayurvedic diet charts are still written manually by practitioners. Existing software solutions focus primarily on macro and micro nutrients but completely ignore Ayurvedic nutritional concepts like Rasa (six tastes), Virya (heating/cooling properties), and food compatibility based on individual constitution.</p>
+          <p style="margin-top: 1rem;">This creates inefficiencies, reduces accuracy, and makes it harder for practitioners to deliver truly holistic dietary care rooted in Ayurvedic principles.</p>
+        </div>
+        <div class="content-card">
+          <h3>Our Solution</h3>
+          <p>Ayuva is a comprehensive cloud-based platform that seamlessly integrates modern nutritional analysis with traditional Ayurvedic dietary wisdom. Our AI-powered system considers both scientific nutrition data and ancient principles to create personalized, effective diet plans.</p>
+          <p style="margin-top: 1rem;">We make it possible for practitioners to generate Ayurveda-compliant diet charts in minutes instead of hours, while ensuring nutritional accuracy and cultural authenticity.</p>
+        </div>
+        <div class="content-card">
+          <h3>Technology Meets Tradition</h3>
+          <ul>
+            <li>8000+ food database with dual analysis</li>
+            <li>AI algorithms trained on Ayurvedic principles</li>
+            <li>Modern UX with traditional wisdom</li>
+            <li>Cloud-based for accessibility</li>
+            <li>Mobile-first design for modern practitioners</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>Impact & Vision</h3>
+          <p>Our vision is to empower Ayurvedic practitioners worldwide with tools that honor traditional knowledge while leveraging modern technology. We aim to make personalized, constitution-based nutrition accessible to everyone.</p>
+          <p style="margin-top: 1rem;">By digitizing and standardizing Ayurvedic dietary practices, we're helping preserve and propagate this ancient science for future generations.</p>
+        </div>
+      </div>
+
+      <div style="background: #1A1A1A; padding: 3rem 2rem; border-radius: 16px; text-align: center; margin-top: 3rem;">
+        <h3 style="color: #2ECC71; margin-bottom: 2rem;">Why Choose Ayuva?</h3>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-number">5x</span>
+            <span class="stat-label">Faster Diet Chart Creation</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">98%</span>
+            <span class="stat-label">Ayurvedic Accuracy</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">Nutritionally Balanced</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">24/7</span>
+            <span class="stat-label">Cloud Availability</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="back-button" onclick="showPage('home')" title="Back to Home">←</button>
+    
+    <footer>
+      © 2025 Ayuva | Hackathon Project
+    </footer>
+  </div>
+
+  <!-- CONTACT PAGE -->
+  <div id="contact" class="page">
+    <div class="breadcrumb">
+      <a onclick="showPage('home')">Home</a> <span>></span> <span>Contact</span>
+    </div>
+
+    <div class="page-header">
+      <h1>📩 Get in Touch</h1>
+      <p>Ready to revolutionize your Ayurvedic practice? We'd love to hear from you!</p>
+    </div>
+
+    <div class="content-section">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-bottom: 3rem;">
+        <div>
+          <h3 style="color: #2ECC71; margin-bottom: 2rem;">Contact Information</h3>
+          <div class="content-card">
+            <div style="margin-bottom: 1.5rem;">
+              <h4 style="color: #39FF14; margin-bottom: 0.5rem;">📧 Email</h4>
+              <p>wellness.wizards06@gmail.com</p>
+              <p style="color: #AAAAAA; font-size: 0.9rem;">We respond within 24 hours</p>
+            </div>
+            <div style="margin-bottom: 1.5rem;">
+              <h4 style="color: #39FF14; margin-bottom: 0.5rem;">🏢 Office</h4>
+              <p>Ayuva Technologies Pvt. Ltd.</p>
+              <p>Mumbai, Maharashtra India</p>
+              <p style="color: #AAAAAA; font-size: 0.9rem;">Hybrid-first company</p>
+            </div>
+            <div>
+              <h4 style="color: #39FF14; margin-bottom: 0.5rem;">⏰ Support Hours</h4>
+              <p>Monday - Friday: 9 AM - 6 PM IST</p>
+              <p>Emergency support: 24/7</p>
+            </div>
+          </div>
+        </div>
+        
+        <div>
+          <h3 style="color: #2ECC71; margin-bottom: 2rem;">Send us a Message</h3>
+          <form onsubmit="sendContactMessage(event)" style="background: #1A1A1A; padding: 2rem; border-radius: 12px;">
+            <div class="form-group">
+              <label>Your Name</label>
+              <input type="text" name="name" required>
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" name="email" required>
+            </div>
+            <div class="form-group">
+              <label>Organization/Practice</label>
+              <input type="text" name="organization">
+            </div>
+            <div class="form-group">
+              <label>Subject</label>
+              <select name="subject" required>
+                <option value="">Select a subject</option>
+                <option value="demo">Request a Demo</option>
+                <option value="partnership">Partnership Inquiry</option>
+                <option value="integration">Integration Questions</option>
+                <option value="pricing">Pricing Information</option>
+                <option value="support">Technical Support</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Message</label>
+              <textarea name="message" rows="5" placeholder="Tell us about your needs and how we can help..." required></textarea>
+            </div>
+            <button type="submit" style="width: 100%;">Send Message</button>
+          </form>
+        </div>
+      </div>
+
+      <div style="text-align: center; padding: 2rem; background: #1A1A1A; border-radius: 12px;">
+        <h3 style="color: #2ECC71; margin-bottom: 1rem;">Follow Our Journey</h3>
+        <p style="color: #AAAAAA; margin-bottom: 2rem;">Stay updated with Ayuva's development and launch</p>
+        <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
+          <a href="https://github.com/alilakkadghat" target="_blank" style="color: #2ECC71; text-decoration: none; padding: 0.8rem 1.5rem; border: 1px solid #2ECC71; border-radius: 8px; transition: all 0.3s;">
+            📚 GitHub
+          </a>
+          <a href="https://www.linkedin.com/in/aliasgar-lakkadghat-06b58920b/" target="_blank" style="color: #2ECC71; text-decoration: none; padding: 0.8rem 1.5rem; border: 1px solid #2ECC71; border-radius: 8px; transition: all 0.3s;">
+            💼 LinkedIn
+          </a>
+          <a href="https://x.com/Ali280306L" target="_blank" style="color: #2ECC71; text-decoration: none; padding: 0.8rem 1.5rem; border: 1px solid #2ECC71; border-radius: 8px; transition: all 0.3s;">
+            🐦 Twitter
+          </a>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 3rem;">
+        <button onclick="sendEmail()" style="font-size: 1.2rem; padding: 1rem 2rem;">
+          📧 Email Us Directly
+        </button>
+      </div>
+    </div>
+
+    <button class="back-button" onclick="showPage('home')" title="Back to Home">←</button>
+    
+    <footer>
+      © 2025 Ayuva | Hackathon Project
+    </footer>
+  </div>
+
+<script>
+    // Global state
+    let currentPage = 'home';
+    let waitlistEmails = [];
+    let contactMessages = [];
+    
+    // UTILITY: Function to show temporary messages
+    function showMessage(text, color) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'success-message';
+        messageDiv.textContent = text;
+        messageDiv.style.background = color || '#2ECC71';
+        document.body.appendChild(messageDiv);
+        
+        // Remove the message after a few seconds
+        setTimeout(() => {
+            messageDiv.remove();
+        }, 3500);
+    }
+
+    // Navigation functions
+    function showPage(pageId) {
+      // Hide all pages
+      document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+      });
+      
+      // Remove active class from nav links
+      document.querySelectorAll('nav .links a').forEach(link => {
+        link.classList.remove('active');
+      });
+      
+      // Show selected page
+      const newPage = document.getElementById(pageId);
+      if (newPage) {
+          newPage.classList.add('active');
+          currentPage = pageId;
+      }
+      
+      // Update nav active state
+      const navLink = document.getElementById(`nav-${pageId}`);
+      if (navLink) {
+        navLink.classList.add('active');
+      }
+      
+      // Scroll to top
+      window.scrollTo(0, 0);
+      
+      // Update page title
+      updatePageTitle(pageId);
+    }
+    
+    function updatePageTitle(pageId) {
+      const titles = {
+        'home': 'Ayuva - Ayurvedic Diet Management Platform',
+        'features': 'Features - Ayuva',
+        'demo': 'Live Demo - Ayuva',
+        'about': 'About - Ayuva',
+        'contact': 'Contact - Ayuva',
+        'patient-profiles': 'Patient Profiles - Ayuva',
+        'nutrient-tracking': 'Nutrient Tracking - Ayuva',
+        'diet-charts': 'Diet Charts - Ayuva',
+        'security': 'Security - Ayuva',
+        'mobile': 'Mobile Features - Ayuva',
+        'integration': 'Integration - Ayuva'
+      };
+      document.title = titles[pageId] || 'Ayuva';
+    }
+
+    // Waitlist functionality
+    function joinWaitlist(event) {
+      event.preventDefault();
+      const email = event.target.email.value;
+      
+      if (waitlistEmails.includes(email)) {
+        showMessage('You are already on our waitlist!', '#FFA500');
+        return;
+      }
+      
+      waitlistEmails.push(email);
+      console.log('Waitlist emails:', waitlistEmails);
+      
+      showMessage('Successfully joined the waitlist!', '#2ECC71');
+      event.target.reset();
+    }
+
+    // Contact form functionality (CORRECTED)
+    function sendContactMessage(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const messageData = {
+            name: formData.get('name'),
+            email: formData.get('email'),
+            organization: formData.get('organization'),
+            subject: formData.get('subject'),
+            message: formData.get('message') // Corrected this line
+        };
+        
+        contactMessages.push(messageData);
+        console.log('Contact Messages:', contactMessages);
+        
+        showMessage('✅ Message sent successfully!', '#2ECC71');
+        event.target.reset();
+    }
+    
+    // --- MISSING FUNCTIONS ADDED BELOW ---
+
+    // For Nutrient Tracking Demo page
+    function switchNutrientTab(event, tabId) {
+        const parent = event.target.closest('.demo-interface');
+        parent.querySelectorAll('.demo-tab').forEach(tab => tab.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        parent.querySelectorAll('.demo-panel').forEach(panel => panel.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+    }
+
+    // For Demo page
+    function switchDemoTab(event, tabId) {
+        const parent = event.target.closest('.demo-interface');
+        parent.querySelectorAll('.demo-tab').forEach(tab => tab.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        parent.querySelectorAll('.demo-panel').forEach(panel => panel.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+    }
+
+    function updatePatientDemo() {
+        const resultDiv = document.getElementById('patient-update-result');
+        resultDiv.style.display = 'block';
+        setTimeout(() => { resultDiv.style.display = 'none'; }, 3000);
+        console.log("Patient profile updated.");
+    }
+
+    function generateDietFromProfile() {
+        alert("Generating diet plan based on the current profile...");
+        // Switch to the diet generation tab
+        const dietTabButton = document.querySelector('button[onclick*="diet-generation-demo"]');
+        if (dietTabButton) dietTabButton.click();
+    }
+
+    function switchMealTab(event, tabId) {
+        const parent = event.target.closest('.demo-panel');
+        parent.querySelectorAll('.demo-tab').forEach(tab => tab.classList.remove('active'));
+        event.target.classList.add('active');
+
+        parent.querySelectorAll('.demo-panel').forEach(panel => panel.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+    }
+
+    function exportDietChart() {
+        alert("Exporting diet chart as PDF...");
+    }
+
+    function customizeDiet() {
+        alert("Opening diet customization options...");
+    }
+
+    function scheduleFollowUp() {
+        alert("Scheduling a follow-up appointment...");
+    }
+
+    function searchFoodDemo(query) {
+        console.log("Searching for:", query);
+        // This would contain logic to filter and display food items
+    }
+
+    function showFoodDetails(foodId) {
+        alert(`Showing details for ${foodId}...`);
+        // This would populate the food-details div
+    }
+    
+    // For Contact page
+    function sendEmail() {
+        window.location.href = "mailto:wellness.wizards06@gmail.com";
+    }
+
+  </script>
+
+    </body>
+    
+    </html>
